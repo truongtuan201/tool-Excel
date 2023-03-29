@@ -12,36 +12,25 @@ function export()
     $dataEnArr = json_decode($dataEn, true);
     $newArrJp = array();
     $newArrEn = array();
-    foreach ($dataJpArr as $key => $val) {
-        if (is_array($val)) {
-            foreach ($val as $key_2 => $val_2) {
-                if (is_array($val_2)) {
-                    foreach ($val_2 as $key_3 => $val_3) {
-                        $newArrJp[$key . '__' . $key_2 . '__' . $key_3] = $val_3;
-                    }
-                } else {
-                    $newArrJp[$key . '__' . $key_2] = $val_2;
-                }
+    function flattenArray($array, $prefix = '')
+    {
+        $result = [];
+        foreach ($array as $key => $val) {
+            if (is_array($val)) {
+                $result = array_merge(
+                    $result,
+                    flattenArray($val, $prefix . $key . '__')
+                );
+            } else {
+                $result[$prefix . $key] = $val;
             }
-        } else {
-            $newArrJp[$key] = $val;
         }
+        return $result;
     }
-    foreach ($dataEnArr as $key => $val) {
-        if (is_array($val)) {
-            foreach ($val as $key_2 => $val_2) {
-                if (is_array($val_2)) {
-                    foreach ($val_2 as $key_3 => $val_3) {
-                        $newArrEn[$key . '__' . $key_2 . '__' . $key_3] = $val_3;
-                    }
-                } else {
-                    $newArrEn[$key . '__' . $key_2] = $val_2;
-                }
-            }
-        } else {
-            $newArrEn[$key] = $val;
-        }
-    }
+
+    $newArrJp = flattenArray($dataJpArr);
+    $newArrEn = flattenArray($dataEnArr);
+
     $spreadsheet = new Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
     $sheet->setCellValue('A1', 'Key');
@@ -55,14 +44,15 @@ function export()
         $sheet->setCellValue('A' . $row, $key);
         $sheet->setCellValue('B' . $row, $val);
         $keys[] = $key;
-        $row++;
-    }
-    foreach ($keys as $k => $v) {
-        foreach ($newArrEn as $key => $val) {
-            if ($v == $key) {
-                $sheet->setCellValue('C' . $k + 2, $val);
+
+        foreach ($newArrEn as $eKey => $eVal) {
+            if ($key == $eKey) {
+                $sheet->setCellValue('C' . $row, $eVal);
+                break;
             }
         }
+
+        $row++;
     }
     $writer = new Xlsx($spreadsheet);
     $writer->save('./file_excel/file.xlsx');
