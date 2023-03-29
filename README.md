@@ -14,7 +14,7 @@ Các bước thực hiện
 
 2. Export file .ts sang Excel
    Bạn có thể chuyển đổi tệp tin .ts sang định dạng Excel bằng cách sử dụng lệnh sau trong terminal:
-
+   // Di chuyển file cần translate vào fodel file_translate
     RUN ts-node export.ts //để chuyển đổi data trong file .ts sang dạng json
     RUN php export.php //Lệnh này sẽ chuyển đổi tệp tin data.ts sang định dạng Excel.
 
