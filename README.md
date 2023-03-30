@@ -21,7 +21,7 @@ Các bước thực hiện
 3. Import file Excel vào .ts
    Bạn có thể chuyển đổi tệp Excel sang định dạng .ts bằng cách sử dụng lệnh sau trong terminal:
     
-    Copy file excel fodel file_excel
+    Copy file excel vào fodel file_excel
     RUN php import.php
 
 4. Kết luận
